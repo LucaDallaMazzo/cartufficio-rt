@@ -1,0 +1,13 @@
+{
+  "actionButtons": {
+    "commands": [
+      {
+        "command": "ng build --base-href https://lucadallamazzo.github.io/cartufficio-rt/ --output-path docs",
+        "name": "build",
+      }
+    ],
+    "defaultColor": "white",
+    "reloadButton": "↻",
+    "loadNpmCommands": true
+  }
+}

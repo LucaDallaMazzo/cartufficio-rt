@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcartufficio_rt=self.webpackChunkcartufficio_rt||[]).push([[8],{8:e=>{e.exports=function(){throw new Error("ws does not work in the browser. Browser clients must use the native WebSocket object")}}}]);
