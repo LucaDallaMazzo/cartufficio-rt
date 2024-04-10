@@ -1,0 +1,140 @@
+<app-caption (filterEdit)="setFilter($event)"></app-caption>
+<p-dataView
+  #dv
+  [value]="shownList"
+  sortField="name"
+  [sortOrder]="-1"
+  [loading]="false"
+>
+  <ng-template pTemplate="list" let-lista>
+    <div class="grid grid-nogutter">
+      @for (item of sortArr(lista); track $index; let first = $first) {
+        <div class="col-12">
+          <div
+            class="flex flex-column xl:flex-row align-items-center xl:align-items-start p-1 gap-1 xl:p-4 xl:gap-4 border-top-1 surface-border"
+          >
+            @if (!GLOBAL.MOBILE) {
+              <p-avatar
+                [label]="getAvatarText(item)"
+                styleClass="mr-2"
+                size="xlarge"
+                [style]="getAvtarStyle(item)"
+              >
+              </p-avatar>
+
+              <div
+                class="flex flex-column align-items-center sm:align-items-start gap-3"
+              >
+                <div class="text-2xl font-bold text-900">{{ item.name }}</div>
+                <div class="flex align-items-center gap-3">
+                  <span>Stato: </span>
+                  <span class="font-semibold">{{ item.stato }}</span>
+                </div>
+                <div class="flex align-items-center gap-3">
+                  <span>Ultima verifica: </span>
+                  <span class="font-semibold">
+                    {{ item.lastVer | date: "dd/MM/yyyy" }}
+                  </span>
+                </div>
+                <div class="flex align-items-center gap-3">
+                  <span>Ultima trasmissione: </span>
+                  <span class="font-semibold">
+                    {{ item.lastTrasm | date: "dd/MM/yyyy" }}
+                  </span>
+                </div>
+                <div class="flex align-items-center gap-3">
+                  <span>Versione disponibile: </span>
+                  <span class="font-semibold">{{ item.versDisp }}</span>
+                </div>
+                <div class="flex align-items-center gap-3">
+                  <span>Versione modello: </span>
+                  <span class="font-semibold">{{ item.versModel }}</span>
+                </div>
+              </div>
+            } @else {
+              <div
+                class="flex flex-column align-items-center sm:align-items-start m-1"
+              >
+                <div
+                  class="text-l font-bold text-900 text-center border-solid border-1 p-3"
+                  [style]="getMobileStyle(item)"
+                  (click)="onItemClick(item)"
+                >
+                  {{ item.name }}
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </ng-template>
+</p-dataView>
+@if (GLOBAL.MOBILE) {
+  <p-sidebar
+    [(visible)]="sidebarVisible"
+    [position]="'bottom'"
+    [modal]="true"
+    [blockScroll]="true"
+    [style]="{ height: '80dvh' }"
+  >
+    <ng-template pTemplate="header"
+      ><div class="text-2xl font-bold text-900 ml-3">
+        {{ selectedItem?.name }}
+      </div></ng-template
+    >
+    <ng-template pTemplate="content">
+      <div class="flex flex-column gap-4 m-3">
+        <div class="flex align-items-center gap-3">
+          <span>Stato: </span>
+          <span class="font-semibold">{{ selectedItem?.stato }}</span>
+        </div>
+        <div
+          class="flex align-items-center gap-3"
+          [style]="getLastVerStyle(selectedItem!)"
+        >
+          <span>Ultima verifica: </span>
+          <span class="font-semibold">
+            {{ selectedItem?.lastVer | date: "dd/MM/yyyy" }}
+          </span>
+        </div>
+        <div
+          class="flex align-items-center gap-3"
+          [style]="getLastTrasmStyle(selectedItem!)"
+        >
+          <span>Ultima trasmissione: </span>
+          <span class="font-semibold">
+            {{ selectedItem?.lastTrasm | date: "dd/MM/yyyy" }}
+          </span>
+        </div>
+        <div
+          class="flex align-items-center gap-3"
+          [style]="getVersionsNotEqStyle(selectedItem!)"
+        >
+          <span>Versione disponibile: </span>
+          <span class="font-semibold">{{ selectedItem?.versDisp }}</span>
+        </div>
+        <div
+          class="flex align-items-center gap-3"
+          [style]="getVersionsNotEqStyle(selectedItem!)"
+        >
+          <span>Versione modello: </span>
+          <span class="font-semibold">{{ selectedItem?.versModel }}</span>
+        </div>
+        <div class="flex align-items-center gap-3">
+          <span>Scadenza assistenza: </span>
+          <p-calendar
+            [touchUI]="false"
+            [dateFormat]="'dd/mm/yy'"
+            [ngModel]="selectedItem!.date"
+            [readonlyInput]="true"
+            (onSelect)="changeDateItem(selectedItem!, $event)"
+          ></p-calendar>
+        </div>
+      </div>
+    </ng-template>
+  </p-sidebar>
+}
+<p-blockUI [blocked]="isLoading">
+  <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+</p-blockUI>

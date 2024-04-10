@@ -1,0 +1,122 @@
+<div class="flex m-5 mt-0 flex-column gap-4">
+  <div class="text-2xl font-bold text-900 text-center xl:text-left">
+    La Cartufficio RT
+  </div>
+  <div class="flex flex-row gap-4 align-items-center justify-content-center">
+    <span
+      (click)="toggleFilters()"
+      class="pi pi-search"
+      [style]="{ color: showFilters ? 'green' : 'white' }"
+    ></span>
+    <span
+      (click)="toggleAdd()"
+      class="pi pi-plus"
+      [style]="{ color: showAdd ? 'green' : 'white' }"
+    ></span>
+  </div>
+  @if (showFilters) {
+    <div
+      class="flex flex-column xl:flex-row gap-4 align-items-center border-none border-bottom-1 border-solid surface-border pb-4"
+    >
+      <span class="p-float-label">
+        <input
+          pInputText
+          id="nameFilter"
+          [(ngModel)]="nameFilter"
+          (ngModelChange)="setFilter()"
+        />
+        <label for="nameFilter">Filtro nome</label>
+      </span>
+      <span class="p-float-label">
+        <p-calendar
+          [(ngModel)]="dateFilter"
+          view="month"
+          dateFormat="mm/yy"
+          inputId="datefilter"
+          (ngModelChange)="setFilter()"
+          [showClear]="true"
+          [showButtonBar]="true"
+        ></p-calendar>
+        <label for="datefilter">Filtro scadenza assistenza</label>
+      </span>
+      <span>
+        <p-checkbox
+          [(ngModel)]="lastVerDue"
+          [binary]="true"
+          inputId="lastver"
+          (ngModelChange)="setFilter()"
+          styleClass="mr-2"
+        ></p-checkbox>
+        <label for="lastver">Ultima verifica scaduta</label>
+      </span>
+      <span>
+        <p-checkbox
+          [(ngModel)]="lastTrasmDue"
+          [binary]="true"
+          inputId="lasttrasm"
+          (ngModelChange)="setFilter()"
+          styleClass="mr-2"
+        ></p-checkbox>
+        <label for="lasttrasm">Ultima trasmissione scaduta</label>
+      </span>
+      <span>
+        <p-checkbox
+          [(ngModel)]="versionsNotEq"
+          [binary]="true"
+          inputId="versions"
+          (ngModelChange)="setFilter()"
+          styleClass="mr-2"
+        ></p-checkbox>
+        <label for="versions">Versioni non congruenti</label>
+      </span>
+    </div>
+  }
+  @if (showAdd) {
+    <div class="flex flex-column xl:flex-row gap-4 align-items-center border-none border-bottom-1 border-solid surface-border pb-4">
+      <p-dropdown
+        [options]="devices"
+        (onChange)="onDeviceChange($event)"
+        styleClass="w-full"
+      ></p-dropdown>
+      <ngx-scanner-qrcode
+        #action="scanner"
+        (event)="onResponse($event, action)"
+      ></ngx-scanner-qrcode>
+      <span class="p-float-label">
+        <input
+          pInputText
+          type="text"
+          [(ngModel)]="addLink"
+          id="addlink"
+          [readOnly]="false"
+        />
+        <label for="addlink">Link</label>
+      </span>
+      <span class="p-float-label">
+        <p-calendar
+          [(ngModel)]="addDate"
+          dateFormat="dd/mm/yy"
+          inputId="adddate"
+        ></p-calendar>
+        <label for="adddate">Scadenza assistenza</label>
+      </span>
+      <p-button label="Conferma" (click)="onAdd()"></p-button>
+    </div>
+  }
+  <p-carousel
+    [value]="letters"
+    [numVisible]="GLOBAL.MOBILE ? 5 : 10"
+    [numScroll]="5"
+    [showIndicators]="!GLOBAL.MOBILE"
+    [showNavigators]="!GLOBAL.MOBILE"
+  >
+    <ng-template let-letter pTemplate="item">
+      <p-button
+        [severity]="isLetterActive(letter) ? 'primary' : 'secondary'"
+        class="m-2"
+        label="{{ letter }}"
+        (onClick)="onLetterClick(letter)"
+      ></p-button>
+    </ng-template>
+  </p-carousel>
+</div>
