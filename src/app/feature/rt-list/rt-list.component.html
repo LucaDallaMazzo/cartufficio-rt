@@ -7,9 +7,9 @@
   [loading]="false"
 >
   <ng-template pTemplate="list" let-lista>
-    <div class="grid grid-nogutter">
+    <div [class]="gridClass">
       @for (item of sortArr(lista); track $index; let first = $first) {
-        <div class="col-12">
+        <div [class]="elClass">
           <div
             class="flex flex-column xl:flex-row align-items-center xl:align-items-start p-1 gap-1 xl:p-4 xl:gap-4 border-top-1 surface-border"
           >
@@ -27,28 +27,73 @@
               >
                 <div class="text-2xl font-bold text-900">{{ item.name }}</div>
                 <div class="flex align-items-center gap-3">
+                  <span>Matricola: </span>
+                  <span class="font-semibold">{{ item.matricola }}</span>
+                </div>
+                <div class="flex align-items-center gap-3">
                   <span>Stato: </span>
                   <span class="font-semibold">{{ item.stato }}</span>
                 </div>
-                <div class="flex align-items-center gap-3">
+                <div
+                  class="flex align-items-center gap-3"
+                  [style]="getLastVerStyle(item)"
+                >
                   <span>Ultima verifica: </span>
                   <span class="font-semibold">
                     {{ item.lastVer | date: "dd/MM/yyyy" }}
                   </span>
                 </div>
                 <div class="flex align-items-center gap-3">
+                  <span>Ultima verifica tecnico: </span>
+                  <span class="font-semibold"
+                    >{{ item?.lastVerTec }} <br />
+                    [ {{ item?.lastVerLab }} ]</span
+                  >
+                </div>
+                <div
+                  class="flex align-items-center gap-3"
+                  [style]="getLastTrasmStyle(item)"
+                >
                   <span>Ultima trasmissione: </span>
                   <span class="font-semibold">
                     {{ item.lastTrasm | date: "dd/MM/yyyy" }}
                   </span>
                 </div>
-                <div class="flex align-items-center gap-3">
+                <div
+                  class="flex align-items-center gap-3"
+                  [style]="getVersionsNotEqStyle(item)"
+                >
                   <span>Versione disponibile: </span>
                   <span class="font-semibold">{{ item.versDisp }}</span>
                 </div>
-                <div class="flex align-items-center gap-3">
+                <div
+                  class="flex align-items-center gap-3"
+                  [style]="getVersionsNotEqStyle(item)"
+                >
                   <span>Versione modello: </span>
                   <span class="font-semibold">{{ item.versModel }}</span>
+                </div>
+                <div class="flex align-items-center gap-3">
+                  <span>Scadenza assistenza: </span>
+                  <p-calendar
+                    [touchUI]="false"
+                    [dateFormat]="'dd/mm/yy'"
+                    [ngModel]="item.date"
+                    [readonlyInput]="true"
+                    (onSelect)="changeDateItem(item, $event)"
+                  ></p-calendar>
+                </div>
+                <div
+                  class="flex align-items-center gap-3"
+                  [style]="getVersionsNotEqStyle(item)"
+                >
+                  <span>QR Code: </span>
+                  <span class="font-semibold ml-4">
+                    <span
+                      class="pi pi-qrcode text-5xl"
+                      (click)="toggleQrCode(item)"
+                    ></span>
+                  </span>
                 </div>
               </div>
             } @else {
@@ -105,6 +150,13 @@
             {{ selectedItem?.lastVer | date: "dd/MM/yyyy" }}
           </span>
         </div>
+        <div class="flex align-items-center gap-3">
+          <span>Ultima verifica tecnico: </span>
+          <span class="font-semibold"
+            >{{ selectedItem?.lastVerTec }} <br />(
+            {{ selectedItem?.lastVerLab }} )</span
+          >
+        </div>
         <div
           class="flex align-items-center gap-3"
           [style]="getLastTrasmStyle(selectedItem!)"
@@ -146,7 +198,7 @@
           <span class="font-semibold ml-4">
             <span
               class="pi pi-qrcode text-5xl"
-              (click)="qrCodeVisible = true"
+              (click)="toggleQrCode(selectedItem)"
             ></span>
           </span>
         </div>
@@ -159,13 +211,13 @@
 </p-blockUI>
 <p-dialog
   [(visible)]="qrCodeVisible"
-  [header]="selectedItem?.name"
+  [header]="qrCodeName"
   [modal]="true"
   [dismissableMask]="true"
 >
   <div class="flex justify-content-center align-items-center">
     <qrcode
-      [qrdata]="selectedItem?.link ?? ''"
+      [qrdata]="qrCodeLink ?? ''"
       [width]="10"
       [errorCorrectionLevel]="'L'"
     ></qrcode>

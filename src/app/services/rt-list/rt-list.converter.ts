@@ -6,6 +6,8 @@ const indexes: { [key: string]: { index: number; removeStr: string } } = {
   esito: { index: 14, removeStr: '' },
   name: { index: 30, removeStr: 'Denominazione: ' },
   lastVer: { index: 13, removeStr: 'Data: ' },
+  lastVerLab: { index: 15, removeStr: 'PIVA Laboratorio: ' },
+  lastVerTec: { index: 16, removeStr: 'CF Tecnico: ' },
   lastTrasm: { index: 18, removeStr: 'Data: ' },
   versDisp: { index: 21, removeStr: 'Versione: ' },
   versModel: { index: 25, removeStr: 'Versione: ' },
@@ -21,7 +23,12 @@ export function rtListConverter(htmlText: string): RtList {
     let value: string | Date = lis[index]?.innerText
       .trim()
       .replace(removeStr, '');
-    if (k.includes('last')) {
+    if (
+      k.includes('last') &&
+      value.includes('/') &&
+      k != 'lastVerLab' &&
+      k != 'lastVerTec'
+    ) {
       let date = value.split('/').map((d) => parseInt(d));
       value = new Date(date[2], date[1] - 1, date[0]);
     }

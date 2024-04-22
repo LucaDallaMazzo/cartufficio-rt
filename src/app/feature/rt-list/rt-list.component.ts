@@ -39,6 +39,8 @@ export class RtListComponent {
   selectedItem?: RtList;
 
   qrCodeVisible: boolean = false;
+  qrCodeLink?: string = '';
+  qrCodeName?: string = '';
 
   GLOBAL = GLOBAL;
 
@@ -47,6 +49,16 @@ export class RtListComponent {
   constructor(public rtListService: RtListService) {
     this.setRtList();
   }
+
+  get gridClass() {
+    let clazz = ['grid', 'grid-nogutter'];
+    if (!GLOBAL.MOBILE) clazz.push('flex-row');
+    return clazz.join(' ');
+  }
+  get elClass() {
+    return GLOBAL.MOBILE ? 'col-12' : 'col-6';
+  }
+
   setRtList() {
     this.rtListService.getAllLinks().then((dbList: any) => {
       this.isLoading = true;
@@ -235,5 +247,12 @@ export class RtListComponent {
       'border-color': '#f5d912',
       'background-color': '#f5d9124f',
     };
+  }
+
+  toggleQrCode(item?: RtList) {
+    if (!item) return;
+    this.qrCodeVisible = true;
+    this.qrCodeLink = item.link;
+    this.qrCodeName = item.name;
   }
 }

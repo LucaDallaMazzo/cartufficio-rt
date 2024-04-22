@@ -5,12 +5,12 @@
   <div class="flex flex-row gap-4 align-items-center justify-content-center">
     <span
       (click)="toggleFilters()"
-      class="pi pi-search"
+      class="pi pi-search cursor-pointer"
       [style]="{ color: showFilters ? 'green' : 'white' }"
     ></span>
     <span
       (click)="toggleAdd()"
-      class="pi pi-plus"
+      class="pi pi-plus cursor-pointer"
       [style]="{ color: showAdd ? 'green' : 'white' }"
     ></span>
   </div>
@@ -72,7 +72,9 @@
     </div>
   }
   @if (showAdd) {
-    <div class="flex flex-column xl:flex-row gap-4 align-items-center border-none border-bottom-1 border-solid surface-border pb-4">
+    <div
+      class="flex flex-column xl:flex-row gap-4 align-items-center border-none border-bottom-1 border-solid surface-border pb-4"
+    >
       <p-dropdown
         [options]="devices"
         (onChange)="onDeviceChange($event)"
@@ -105,10 +107,10 @@
   }
   <p-carousel
     [value]="letters"
-    [numVisible]="GLOBAL.MOBILE ? 5 : 10"
+    [numVisible]="GLOBAL.MOBILE ? 5 : 28"
     [numScroll]="5"
-    [showIndicators]="!GLOBAL.MOBILE"
-    [showNavigators]="!GLOBAL.MOBILE"
+    [showIndicators]="false"
+    [showNavigators]="false"
   >
     <ng-template let-letter pTemplate="item">
       <p-button
