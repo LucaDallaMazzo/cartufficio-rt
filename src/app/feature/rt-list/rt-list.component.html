@@ -78,13 +78,20 @@
     [blockScroll]="true"
     [style]="{ height: '80dvh' }"
   >
-    <ng-template pTemplate="header"
-      ><div class="text-2xl font-bold text-900 ml-3">
+    <ng-template pTemplate="header">
+      <div class="text-2xl font-bold text-900 ml-3">
         {{ selectedItem?.name }}
-      </div></ng-template
-    >
+      </div>
+    </ng-template>
     <ng-template pTemplate="content">
-      <div class="flex flex-column gap-4 m-3">
+      <div
+        class="flex flex-column gap-4 m-3"
+        [style]="{ overflow: 'scroll', height: '55vh' }"
+      >
+        <div class="flex align-items-center gap-3">
+          <span>Matricola: </span>
+          <span class="font-semibold">{{ selectedItem?.matricola }}</span>
+        </div>
         <div class="flex align-items-center gap-3">
           <span>Stato: </span>
           <span class="font-semibold">{{ selectedItem?.stato }}</span>
@@ -131,6 +138,18 @@
             (onSelect)="changeDateItem(selectedItem!, $event)"
           ></p-calendar>
         </div>
+        <div
+          class="flex align-items-center gap-3"
+          [style]="getVersionsNotEqStyle(selectedItem!)"
+        >
+          <span>QR Code: </span>
+          <span class="font-semibold ml-4">
+            <span
+              class="pi pi-qrcode text-5xl"
+              (click)="qrCodeVisible = true"
+            ></span>
+          </span>
+        </div>
       </div>
     </ng-template>
   </p-sidebar>
@@ -138,3 +157,17 @@
 <p-blockUI [blocked]="isLoading">
   <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
 </p-blockUI>
+<p-dialog
+  [(visible)]="qrCodeVisible"
+  [header]="selectedItem?.name"
+  [modal]="true"
+  [dismissableMask]="true"
+>
+  <div class="flex justify-content-center align-items-center">
+    <qrcode
+      [qrdata]="selectedItem?.link ?? ''"
+      [width]="10"
+      [errorCorrectionLevel]="'L'"
+    ></qrcode>
+  </div>
+</p-dialog>

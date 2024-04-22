@@ -10,6 +10,9 @@ import { SidebarModule } from 'primeng/sidebar';
 import { CalendarModule } from 'primeng/calendar';
 import { FormsModule } from '@angular/forms';
 import { BlockUIModule } from 'primeng/blockui';
+import { ImageModule } from 'primeng/image';
+import { DialogModule } from 'primeng/dialog';
+import { QRCodeModule } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-rt-list',
@@ -23,6 +26,8 @@ import { BlockUIModule } from 'primeng/blockui';
     CalendarModule,
     FormsModule,
     BlockUIModule,
+    DialogModule,
+    QRCodeModule,
   ],
   templateUrl: './rt-list.component.html',
   styleUrl: './rt-list.component.scss',
@@ -32,6 +37,8 @@ export class RtListComponent {
   shownList: RtList[] = [];
   sidebarVisible: boolean = false;
   selectedItem?: RtList;
+
+  qrCodeVisible: boolean = false;
 
   GLOBAL = GLOBAL;
 
