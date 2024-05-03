@@ -21,7 +21,7 @@ import { AsyncPipe, JsonPipe } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { RtListService } from '../../services/rt-list/rt-list.service';
+import { CashRegisterService } from '../../services/rt-list/rt-list.service';
 import { CarouselModule } from 'primeng/carousel';
 import { GLOBAL } from '../../core/namespace/globals.namespace';
 
@@ -45,7 +45,7 @@ LOAD_WASM().subscribe();
   styleUrl: './caption.component.scss',
 })
 export class CaptionComponent {
-  constructor(public rtListService: RtListService) {}
+  constructor(public cashRegisterService: CashRegisterService) {}
 
   GLOBAL = GLOBAL;
 
@@ -163,7 +163,7 @@ export class CaptionComponent {
 
   onAdd() {
     if (this.addLink && this.addDate)
-      this.rtListService.addLink(this.addLink, this.addDate).then(() => {
+      this.cashRegisterService.addLink(this.addLink, this.addDate).then(() => {
         this.toggleAdd();
         this.addLink = undefined;
         this.addDate = undefined;

@@ -18,7 +18,7 @@
                 [label]="getAvatarText(item)"
                 styleClass="mr-2"
                 size="xlarge"
-                [style]="getAvtarStyle(item)"
+                [style]="getAvatarStyle(item)"
               >
               </p-avatar>
 
@@ -190,10 +190,7 @@
             (onSelect)="changeDateItem(selectedItem!, $event)"
           ></p-calendar>
         </div>
-        <div
-          class="flex align-items-center gap-3"
-          [style]="getVersionsNotEqStyle(selectedItem!)"
-        >
+        <div class="flex align-items-center gap-3">
           <span>QR Code: </span>
           <span class="font-semibold ml-4">
             <span
@@ -220,6 +217,7 @@
       [qrdata]="qrCodeLink ?? ''"
       [width]="10"
       [errorCorrectionLevel]="'L'"
+      [allowEmptyString]="true"
     ></qrcode>
   </div>
 </p-dialog>

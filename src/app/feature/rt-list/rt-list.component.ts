@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataViewModule } from 'primeng/dataview';
-import { RtListService } from '../../services/rt-list/rt-list.service';
-import { RtList } from '../../services/rt-list/rt-list.interface';
+import { CashRegisterService } from '../../services/rt-list/rt-list.service';
+import { CashRegister } from '../../services/rt-list/rt-list.interface';
 import { AvatarModule } from 'primeng/avatar';
 import { GLOBAL } from '../../core/namespace/globals.namespace';
 import { CommonModule } from '@angular/common';
@@ -10,9 +10,9 @@ import { SidebarModule } from 'primeng/sidebar';
 import { CalendarModule } from 'primeng/calendar';
 import { FormsModule } from '@angular/forms';
 import { BlockUIModule } from 'primeng/blockui';
-import { ImageModule } from 'primeng/image';
 import { DialogModule } from 'primeng/dialog';
 import { QRCodeModule } from 'angularx-qrcode';
+import { DbRow } from '../../services/rt-list/db-row.interface';
 
 @Component({
   selector: 'app-rt-list',
@@ -33,10 +33,10 @@ import { QRCodeModule } from 'angularx-qrcode';
   styleUrl: './rt-list.component.scss',
 })
 export class RtListComponent {
-  list: RtList[] = [];
-  shownList: RtList[] = [];
+  list: CashRegister[] = [];
+  shownList: CashRegister[] = [];
   sidebarVisible: boolean = false;
-  selectedItem?: RtList;
+  selectedItem?: CashRegister;
 
   qrCodeVisible: boolean = false;
   qrCodeLink?: string = '';
@@ -46,8 +46,8 @@ export class RtListComponent {
 
   isLoading = false;
 
-  constructor(public rtListService: RtListService) {
-    this.setRtList();
+  constructor(public cashRegisterService: CashRegisterService) {
+    this.setAllRegisters();
   }
 
   get gridClass() {
@@ -59,27 +59,21 @@ export class RtListComponent {
     return GLOBAL.MOBILE ? 'col-12' : 'col-6';
   }
 
-  setRtList() {
-    this.rtListService.getAllLinks().then((dbList: any) => {
+  setAllRegisters() {
+    this.cashRegisterService.getAllLinks().then((dbList: DbRow[]) => {
       this.isLoading = true;
       let idx = 0;
 
-      dbList.forEach((dbRow: any) => {
-        this.rtListService.getInfoFromLink(dbRow.links).subscribe({
-          next: (data: any) => {
-            data = { ...data, ...dbRow };
-            if (dbRow.date) {
-              data.date = this.convertDate(dbRow.date);
-            }
+      dbList.forEach((dbRow: DbRow) => {
+        this.cashRegisterService.getInfoFromLink(dbRow).subscribe({
+          next: (data: CashRegister) => {
             this.list.push(data);
             this.shownList.push(data);
-            idx++;
-            if (idx === dbList.length) {
-              this.isLoading = false;
-            }
           },
           error: (err) => {
-            console.log(err);
+            console.error(err);
+          },
+          complete: () => {
             idx++;
             if (idx === dbList.length) {
               this.isLoading = false;
@@ -90,8 +84,8 @@ export class RtListComponent {
     });
   }
 
-  sortArr(ar: any[]) {
-    return ar.sort((a: any, b: any) => {
+  sortArr(ar: CashRegister[]) {
+    return ar.sort((a: CashRegister, b: CashRegister) => {
       if (a.name > b.name) {
         return 1;
       }
@@ -102,65 +96,41 @@ export class RtListComponent {
     });
   }
 
-  convertDate(str: string | Date) {
-    if (typeof str === 'string') {
-      let d = str.split('-').map((d) => parseInt(d));
-      return new Date(d[0], d[1] - 1, d[2]);
-    }
-    return str;
-  }
-
-  getBackgroundColor(item: RtList) {
-    if (
-      this.isLastTrasmDue(item) ||
-      this.isVersionsNotEq(item) ||
-      this.isLastVerDue(item)
-    ) {
+  getBackgroundColor(item: CashRegister) {
+    if (item.isWarning) {
       return '#f5d9124f';
     }
     return '#6ebe7150';
   }
 
-  getBorderColor(item: RtList) {
-    if (
-      this.isLastTrasmDue(item) ||
-      this.isVersionsNotEq(item) ||
-      this.isLastVerDue(item)
-    ) {
+  getBorderColor(item: CashRegister) {
+    if (item.isWarning) {
       return '#f5d912';
     }
     return '#6ebe71';
   }
 
-  getMobileStyle(item: RtList) {
+  getMobileStyle(item: CashRegister) {
     return {
       'background-color': this.getBackgroundColor(item),
       'border-color': this.getBorderColor(item),
     };
   }
 
-  getAvatarColor(item: RtList) {
-    if (
-      this.isLastTrasmDue(item) ||
-      this.isVersionsNotEq(item) ||
-      this.isLastVerDue(item)
-    ) {
+  getAvatarColor(item: CashRegister) {
+    if (item.isWarning) {
       return '#f5d912';
     }
     return '#6ebe71';
   }
-  getAvtarStyle(item: RtList) {
+  getAvatarStyle(item: CashRegister) {
     return {
       'background-color': this.getAvatarColor(item),
     };
   }
 
-  getAvatarText(item: RtList) {
-    if (
-      this.isLastTrasmDue(item) ||
-      this.isVersionsNotEq(item) ||
-      this.isLastVerDue(item)
-    ) {
+  getAvatarText(item: CashRegister) {
+    if (item.isWarning) {
       return 'WR';
     }
     return 'OK';
@@ -168,33 +138,33 @@ export class RtListComponent {
 
   setFilter(event: any) {
     this.shownList = this.list
-      .filter((item: RtList) => {
+      .filter((item: CashRegister) => {
         if (event.nameFilter.length > 0) {
           return item.name
-            .toLowerCase()
+            ?.toLowerCase()
             .startsWith(event.nameFilter.toLowerCase());
         }
         return true;
       })
-      .filter((item: RtList) => {
+      .filter((item: CashRegister) => {
         if (event.versionsNotEq) {
-          return this.isVersionsNotEq(item);
+          return item.isVersionsNotEq;
         }
         return true;
       })
-      .filter((item: RtList) => {
+      .filter((item: CashRegister) => {
         if (event.lastTrasmDue) {
-          return this.isLastTrasmDue(item);
+          return item.isLastTrasmDue;
         }
         return true;
       })
-      .filter((item: RtList) => {
+      .filter((item: CashRegister) => {
         if (event.lastVerDue) {
-          return this.isLastVerDue(item);
+          return item.isLastVerDue;
         }
         return true;
       })
-      .filter((item: RtList) => {
+      .filter((item: CashRegister) => {
         if (event.dateFilter) {
           return item.date?.getMonth() === event.dateFilter.getMonth();
         }
@@ -202,41 +172,29 @@ export class RtListComponent {
       });
   }
 
-  isLastVerDue(item: RtList) {
-    const twoYearsMilli = 2 * 365 * 24 * 60 * 60 * 1000;
-    return new Date().getTime() - item.lastVer.getTime() > twoYearsMilli;
-  }
-  isLastTrasmDue(item: RtList) {
-    const twoWeeksMilli = 2 * 7 * 24 * 60 * 60 * 1000;
-    return new Date().getTime() - item.lastTrasm.getTime() > twoWeeksMilli;
-  }
-  isVersionsNotEq(item: RtList) {
-    return item.versDisp !== item.versModel;
-  }
-
-  onItemClick(item: RtList) {
+  onItemClick(item: CashRegister) {
     this.sidebarVisible = true;
     this.selectedItem = item;
   }
-  changeDateItem(item: RtList, date: Date) {
-    this.rtListService.editDateItem(item.link!, date);
+  changeDateItem(item: CashRegister, date: Date) {
+    this.cashRegisterService.editDateItem(item.link!, date);
   }
 
-  getLastVerStyle(item: RtList) {
-    if (this.isLastVerDue(item)) {
+  getLastVerStyle(item: CashRegister) {
+    if (item.isLastVerDue) {
       return this.warningStyle;
     }
     return {};
   }
-  getLastTrasmStyle(item: RtList) {
-    if (this.isLastTrasmDue(item)) {
+  getLastTrasmStyle(item: CashRegister) {
+    if (item.isLastTrasmDue) {
       return this.warningStyle;
     }
     return {};
   }
 
-  getVersionsNotEqStyle(item: RtList) {
-    if (this.isVersionsNotEq(item)) {
+  getVersionsNotEqStyle(item: CashRegister) {
+    if (item.isVersionsNotEq) {
       return this.warningStyle;
     }
     return {};
@@ -249,7 +207,7 @@ export class RtListComponent {
     };
   }
 
-  toggleQrCode(item?: RtList) {
+  toggleQrCode(item?: CashRegister) {
     if (!item) return;
     this.qrCodeVisible = true;
     this.qrCodeLink = item.link;
