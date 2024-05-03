@@ -142,9 +142,13 @@ export class RtListComponent {
     this.shownList = this.list
       .filter((item: CashRegister) => {
         if (event.nameFilter.length > 0) {
+          if (event.nameFilter.length < 3)
+            return item.name
+              ?.toLowerCase()
+              .startsWith(event.nameFilter.toLowerCase());
           return item.name
             ?.toLowerCase()
-            .startsWith(event.nameFilter.toLowerCase());
+            .includes(event.nameFilter.toLowerCase());
         }
         return true;
       })
