@@ -1,3 +1,5 @@
+import { TIMESTAMPS } from '../timestamps/timestamps.namespace';
+
 export interface ICashRegister {
   matricola: string;
   stato: string;
@@ -12,6 +14,7 @@ export interface ICashRegister {
   link?: string;
   date?: Date | string;
 }
+
 export class CashRegister {
   matricola: string;
   stato: string;
@@ -51,13 +54,13 @@ export class CashRegister {
   }
 
   get isLastTrasmDue() {
-    const twoWeeksMilli = 2 * 7 * 24 * 60 * 60 * 1000;
-    return new Date().getTime() - this.lastTrasm.getTime() > twoWeeksMilli;
+    return (
+      new Date().getTime() - this.lastTrasm.getTime() > TIMESTAMPS.weeks(1)
+    );
   }
 
   get isLastVerDue() {
-    const twoYearsMilli = 2 * 365 * 24 * 60 * 60 * 1000;
-    return new Date().getTime() - this.lastVer.getTime() > twoYearsMilli;
+    return new Date().getTime() - this.lastVer.getTime() > TIMESTAMPS.years(2);
   }
 
   get isVersionsNotEq() {

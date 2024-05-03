@@ -1,4 +1,7 @@
 <app-caption (filterEdit)="setFilter($event)"></app-caption>
+<div class="m-4" [class.text-center]="GLOBAL.MOBILE">
+  Tot: {{ shownList.length }}
+</div>
 @if (!GLOBAL.MOBILE) {
   <p-table
     [value]="sortArr(shownList)"
