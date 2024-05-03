@@ -1,3 +1,8 @@
-:host::ng-deep .p-sidebar-content{
-  overflow:visible
+:host::ng-deep .p-sidebar-content {
+  overflow: visible;
+}
+
+.warning-cell {
+  background-color: #ffff008a;
+  border-color: #ffff00;
 }

@@ -11,6 +11,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { FormsModule } from '@angular/forms';
 import { BlockUIModule } from 'primeng/blockui';
 import { DialogModule } from 'primeng/dialog';
+import { TableModule } from 'primeng/table';
 import { QRCodeModule } from 'angularx-qrcode';
 import { DbRow } from '../../services/rt-list/db-row.interface';
 
@@ -28,6 +29,7 @@ import { DbRow } from '../../services/rt-list/db-row.interface';
     BlockUIModule,
     DialogModule,
     QRCodeModule,
+    TableModule,
   ],
   templateUrl: './rt-list.component.html',
   styleUrl: './rt-list.component.scss',
