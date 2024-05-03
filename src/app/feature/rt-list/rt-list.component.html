@@ -1,7 +1,7 @@
 <app-caption (filterEdit)="setFilter($event)"></app-caption>
 @if (!GLOBAL.MOBILE) {
   <p-table
-    [value]="shownList"
+    [value]="sortArr(shownList)"
     [columns]="[
       { field: 'name', header: 'Nome' },
       { field: 'matricola', header: 'Matricola' },
