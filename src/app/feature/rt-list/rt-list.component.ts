@@ -138,10 +138,14 @@ export class RtListComponent {
     return 'OK';
   }
 
+  versionsNotEqFilter = false;
+  lastTrasmDueFilter = false;
+  lastVerDueFilter = false;
+
   setFilter(event: any) {
     this.shownList = this.list
       .filter((item: CashRegister) => {
-        if (event.nameFilter.length > 0) {
+        if (event.nameFilter?.length > 0) {
           if (event.nameFilter.length < 3)
             return item.name
               ?.toLowerCase()
@@ -154,20 +158,26 @@ export class RtListComponent {
       })
       .filter((item: CashRegister) => {
         if (event.versionsNotEq) {
+          this.versionsNotEqFilter = true;
           return item.isVersionsNotEq;
         }
+        this.versionsNotEqFilter = false;
         return true;
       })
       .filter((item: CashRegister) => {
         if (event.lastTrasmDue) {
+          this.lastTrasmDueFilter = true;
           return item.isLastTrasmDue;
         }
+        this.lastTrasmDueFilter = false;
         return true;
       })
       .filter((item: CashRegister) => {
         if (event.lastVerDue) {
+          this.lastVerDueFilter = true;
           return item.isLastVerDue;
         }
+        this.lastVerDueFilter = false;
         return true;
       })
       .filter((item: CashRegister) => {
@@ -176,6 +186,25 @@ export class RtListComponent {
         }
         return true;
       });
+  }
+
+  get getLastVerDueTot() {
+    return this.list.reduce(
+      (acc, item) => acc + (item.isLastVerDue ? 1 : 0),
+      0,
+    );
+  }
+  get getLastTrasmDueTot() {
+    return this.list.reduce(
+      (acc, item) => acc + (item.isLastTrasmDue ? 1 : 0),
+      0,
+    );
+  }
+  get getVersionsNotEqTot() {
+    return this.list.reduce(
+      (acc, item) => acc + (item.isVersionsNotEq ? 1 : 0),
+      0,
+    );
   }
 
   onItemClick(item: CashRegister) {

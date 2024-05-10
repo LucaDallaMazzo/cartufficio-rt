@@ -121,6 +121,34 @@
     [sortOrder]="-1"
     [loading]="false"
   >
+    <ng-template pTemplate="header">
+      <div class="flex flex-column gap-3 align-items-stretch">
+        <p-button
+          styleClass="w-full"
+          [severity]="getLastVerDueTot == 0 ? 'secondary' : 'help'"
+          [rounded]="true"
+          [outlined]="!lastVerDueFilter"
+          label="{{ 'Ultima verifica scaduta: ' + getLastVerDueTot }}"
+          (onClick)="setFilter({ lastVerDue: !lastVerDueFilter })"
+        ></p-button>
+        <p-button
+          styleClass="w-full"
+          [severity]="getLastTrasmDueTot == 0 ? 'secondary' : 'help'"
+          [rounded]="true"
+          [outlined]="!lastTrasmDueFilter"
+          label="{{ 'Ultima trasmissione scaduta: ' + getLastTrasmDueTot }}"
+          (onClick)="setFilter({ lastTrasmDue: !lastTrasmDueFilter })"
+        ></p-button>
+        <p-button
+          styleClass="w-full"
+          [severity]="getVersionsNotEqTot == 0 ? 'secondary' : 'help'"
+          [rounded]="true"
+          [outlined]="!versionsNotEqFilter"
+          label="{{ 'Versioni non congruenti: ' + getVersionsNotEqTot }}"
+          (onClick)="setFilter({ versionsNotEq: !versionsNotEqFilter })"
+        ></p-button>
+      </div>
+    </ng-template>
     <ng-template pTemplate="list" let-lista>
       <div [class]="gridClass">
         @for (item of sortArr(lista); track $index; let first = $first) {
