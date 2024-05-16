@@ -79,11 +79,11 @@ export class CashRegisterService {
       let index = indexes[k].index;
       let removeStr = indexes[k].removeStr;
       let value: string | Date = lis[index]?.innerText
-        .trim()
-        .replace(removeStr, '');
+        ?.trim()
+        ?.replace(removeStr, '');
       if (
-        k.includes('last') &&
-        value.includes('/') &&
+        k?.includes('last') &&
+        value?.includes('/') &&
         k != 'lastVerLab' &&
         k != 'lastVerTec'
       ) {
