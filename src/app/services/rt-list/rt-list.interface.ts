@@ -29,19 +29,19 @@ export class CashRegister {
   link?: string;
   date?: Date;
   constructor(cashRegister: ICashRegister) {
-    this.matricola = cashRegister.matricola.trim();
-    this.stato = cashRegister.stato.trim();
-    this.esito = cashRegister.esito.trim();
-    this.name = cashRegister.name.trim();
+    this.matricola = cashRegister.matricola?.trim();
+    this.stato = cashRegister.stato?.trim();
+    this.esito = cashRegister.esito?.trim();
+    this.name = cashRegister.name?.trim();
     this.lastVer = cashRegister.lastVer;
     this.lastTrasm = cashRegister.lastTrasm;
-    this.lastVerLab = cashRegister.lastVerLab.trim();
-    this.lastVerTec = cashRegister.lastVerTec.trim();
-    this.versDisp = cashRegister.versDisp.trim();
-    this.versModel = cashRegister.versModel.trim();
+    this.lastVerLab = cashRegister.lastVerLab?.trim();
+    this.lastVerTec = cashRegister.lastVerTec?.trim();
+    this.versDisp = cashRegister.versDisp?.trim();
+    this.versModel = cashRegister.versModel?.trim();
     this.link = cashRegister.link?.trim();
     if (cashRegister.date) {
-      this.date = this.convertDate(cashRegister.date);
+      this.date = this.convertDate(cashRegister.date ?? new Date(0));
     }
   }
 
